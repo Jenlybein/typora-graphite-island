@@ -1,0 +1,1127 @@
+/*
+ * Graphite Island · Spectrum — Typora Theme
+ * 石墨岛·光谱 —— 一套在石墨图纸上以暖土六色谱组织层级的 Typora 主题。
+ * 视觉与配色规则集中于本文件头部说明，不依赖任何外部样式表。
+ *
+ * 视觉方向：石墨图纸上的暖土六色谱
+ *   云白图纸摊在雾灰绘图台上，40px 石墨色图纸网格作底纹，
+ *   Bahnschrift 制图字做标题；标题回到“每层一色”：
+ *   六个层级各配一枚低饱和暖土色，靠色相区分层级，靠低明度把版面坐平。
+ *
+ * 标题六色谱（只用于标题文字与它自己的记号，不进入正文主体色板）：
+ *   H1 石墨 #1D1D1F（云白 16.28:1）   H2 赤陶 #BF4800（雾灰 4.66:1）
+ *   H3 赭金 #8A5E14（5.50:1）         H4 橄榄 #55602F（6.55:1）
+ *   H5 梅褐 #6B4A5B（云白 7.37:1）    H6 暖灰 #6B645D（5.63:1）
+ *   六色都落在 L28–40% 一带，H2 用赤陶原色作唯一的“高饱和重点”；
+ *   色相从中性石墨 → 赤陶 23° → 赭金 37° → 橄榄 83° → 梅褐 326°
+ *   一路拉开，靠色相区分、靠明度统一，所以分得开又不打架。
+ *
+ * 主体五色（正文其余色值均由这五色以透明度/加深派生）：
+ *   石墨 #1D1D1F  正文文字 / 1px 结构线 / 深色面 / 页脚底（云白上 ≈16.2:1）
+ *   云白 #FBFBFD  页面底色 / 卡片底 / 深底上的文字（Apple 纸白）
+ *   暖砂 #D8A24B  三角 / 高亮标记 / 色块填充 / 引言块底（系统橙的柔化）
+ *   赤陶 #BF4800  方形 / 状态强调 / 主按钮 hover / 危险提示（Apple “New” 砖橙）
+ *   雾灰 #F5F5F7  灰底区块 / 40px 图纸网格 / 分隔线（Apple 系统浅灰）
+ *
+ * 代码区域（用户指定）：行内代码 / 代码块 / 源码模式使用独立的暖纸配色与几何——
+ *   暖纸 #efe9d6 底 + 薄荷/红/黄/绿语法色，换取更高的代码区分度；
+ *   例外只作用于代码，正文与标题仍守五色板。
+ *   代码块采用 3px 立体投影；在 Typora 源码模式里，CodeMirror 的每一行 <pre>
+ *   都会继承这条投影，于行间形成砂色线，这里按用户要求把它收细到 1px。
+ */
+
+:root {
+    /* === 五色色板（Apple 式克制用色：近黑墨 + 纸白 + 浅灰，彩色只留两枚小记号） === */
+    --bb-ink:             #1D1D1F;   /* 石墨：全部文字 / 1px 结构线 / 深色面 */
+    --bb-paper:           #FBFBFD;   /* 云白：页面与卡片底 / 墨底上的字 */
+    --bb-amber:           #D8A24B;   /* 暖砂：三角 / 高亮 / 色块 / 引言底 */
+    --bb-clay:            #BF4800;   /* 赤陶：方形 / 状态 / hover / 警告 */
+    --bb-clay-deep:       #A64105;   /* 赤陶加深：交互态/状态线专用，paper 字 ≈5.9:1 */
+    --bb-mist:            #F5F5F7;   /* 雾灰：分区底 / 40px 网格 / 分隔线 */
+
+    /* === 标题六色谱（每层一色；只给标题文字与它自己的记号） === */
+    --bb-h1:              var(--bb-ink);  /* 石墨：云白 16.28:1 */
+    --bb-h2:              var(--bb-clay); /* 赤陶：雾灰 4.66:1（H2 带底最坏点） */
+    --bb-h3:              #8A5E14;        /* 赭金：暖砂压暗，云白 5.50:1 */
+    --bb-h4:              #55602F;        /* 橄榄：暖土扩色，云白 6.55:1 */
+    --bb-h5:              #6B4A5B;        /* 梅褐：暖土扩色，云白 7.37:1 / 雾灰 7.00:1 */
+    --bb-h6:              #6B645D;        /* 暖灰：石墨×雾灰，云白 5.63:1 */
+
+    /* === 墨色（石墨的透明度阶梯，用于文字层级） === */
+    --bb-ink-soft:        rgba(29, 29, 31, 0.86);
+    --bb-ink-muted:       rgba(29, 29, 31, 0.70);  /* 次要信息；云白上 ≈6.0:1，仍保持 AA */
+
+    /* === 1px 结构线 === */
+    --bb-line:            rgba(29, 29, 31, 0.28);
+    --bb-line-strong:     rgba(29, 29, 31, 0.55);
+    --bb-line-faint:      rgba(29, 29, 31, 0.12);
+
+    /* === 表面 === */
+    --bb-amber-tint:      rgba(216, 162, 75, 0.16);
+
+    /* === 40px 图纸网格（小格 40px，大格 200px） === */
+    --bb-grid-line:       rgba(29, 29, 31, 0.13);
+    --bb-grid-major:      rgba(29, 29, 31, 0.20);
+    --bb-grid-image:
+        linear-gradient(to right, var(--bb-grid-line) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--bb-grid-line) 1px, transparent 1px),
+        linear-gradient(to right, var(--bb-grid-major) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--bb-grid-major) 1px, transparent 1px);
+    --bb-grid-size:       40px 40px, 40px 40px, 200px 200px, 200px 200px;
+    /* === 代码框配色（用户指定，只作用于代码/源码模式） === */
+    --bb-code-bg:          #efe9d6;   /* 代码块暖纸底 */
+    --bb-code-paper:       #ffffff;   /* --ai-bg-paper：源码模式纸白 */
+    --bb-code-text:        #725d42;   /* --ai-text-body：代码正文 */
+    --bb-code-text-main:   #794f27;   /* --ai-text-main：变量/操作符/源码标题 */
+    --bb-code-text-2:      #9f927d;   /* --ai-text-secondary：URL/引号/括号 */
+    --bb-code-text-muted:  #8a7b66;   /* --ai-text-muted：meta */
+    --bb-code-line-no:     #c4b89e;   /* --ai-text-disabled：注释/行号 */
+    --bb-code-mint:        #11a89b;   /* --ai-primary-active：定义/内建/格式符 */
+    --bb-code-mint-bg:     #e6f9f6;   /* --ai-primary-bg：行内代码底 */
+    --bb-code-mint-line:   #cdeeea;   /* 行内代码描边 */
+    --bb-code-border:      #c9bea4;   /* --ai-border-light */
+    --bb-code-shadow:      #d4c9b4;   /* --ai-shadow-input：3px 立体投影 */
+    --bb-code-focus:       #ffcc00;   /* --ai-focus-yellow：代码选中 */
+    --bb-code-keyword:     #c94444;   /* 语法：关键词/标签 */
+    --bb-code-number:      #dba90e;   /* 语法：数字/原子/属性 */
+    --bb-code-string:      #5a9e1e;   /* 语法：字符串 */
+    --bb-code-string-2:    #4a8517;   /* 语法：字符串-2 */
+    --bb-code-em:          #c97d1c;   /* 语法：强调（橙） */
+    --bb-code-radius:      18px;      /* --ai-radius */
+    --bb-code-mono:        "JetBrains Mono", "Fira Code", "Cascadia Code",
+                           "SF Mono", Consolas, Menlo, monospace;
+
+    /* === 阴影（只给“图纸/浮层”这类真物体） === */
+    --bb-shadow-sheet:    0 1px 0 rgba(29, 29, 31, 0.05),
+                          0 22px 44px -30px rgba(29, 29, 31, 0.45);
+    --bb-shadow-float:    0 12px 32px -20px rgba(29, 29, 31, 0.50);
+
+    /* === 圆角（包豪斯几何，但收边柔和） === */
+    --bb-radius-xs:       2px;
+    --bb-radius-sm:       4px;
+    --bb-radius:          8px;
+    --bb-radius-lg:       12px;
+
+    /* === Typora 原生 UI 变量（让标题栏/菜单/查找等原生控件也落进同一色板） === */
+    --bg-color:                  var(--bb-mist);
+    --text-color:                var(--bb-ink);
+    --md-char-color:             var(--bb-ink-muted);
+    --meta-content-color:        var(--bb-ink-muted);
+    --primary-color:             var(--bb-ink);
+    --primary-btn-border-color:  var(--bb-ink);
+    --primary-btn-text-color:    var(--bb-paper);
+    --window-border:             1px solid var(--bb-line);
+    --active-file-bg-color:      var(--bb-ink);
+    --active-file-text-color:    var(--bb-paper);
+    --active-file-border-color:  var(--bb-clay);
+    --side-bar-bg-color:         var(--bb-mist);
+    --item-hover-bg-color:       var(--bb-paper);
+    --item-hover-text-color:     var(--bb-ink);
+    --search-select-bg-color:    var(--bb-amber);
+    --search-select-text-color:  var(--bb-ink);
+    --control-text-color:        var(--bb-ink-muted);
+    --control-text-hover-color:  var(--bb-ink);
+    --rawblock-edit-panel-bd:    var(--bb-line-strong);
+    --select-text-bg-color:      var(--bb-amber);
+    --select-text-font-color:    var(--bb-ink);
+    --monospace:                 var(--bb-mono);
+
+    /* === 字体 === */
+    --bb-font:            "Segoe UI Variable Text", "Segoe UI",
+                          "Noto Sans SC", "MiSans", "Microsoft YaHei",
+                          "PingFang SC", "Hiragino Sans", sans-serif;
+    --bb-font-display:    "Bahnschrift", "Segoe UI Variable Display",
+                          "Noto Sans SC", "Microsoft YaHei",
+                          "PingFang SC", sans-serif;
+    --bb-mono:            "Cascadia Mono", "Cascadia Code", Consolas,
+                          "SF Mono", Menlo, "DejaVu Sans Mono", monospace;
+}
+
+/* =========================================================
+   画布：雾灰绘图台 + 40px 图纸网格
+   ========================================================= */
+html {
+    font-size: 16px;
+    -webkit-text-size-adjust: 100%;
+    background-color: var(--bb-mist);
+}
+
+body {
+    background-color: var(--bb-mist);
+    background-image: var(--bb-grid-image);
+    background-size: var(--bb-grid-size);
+    background-position: 0 0;
+    background-attachment: fixed;
+    font-family: var(--bb-font);
+    color: var(--bb-ink);
+    letter-spacing: 0.008em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* 云白图纸 */
+#write {
+    max-width: 860px;
+    margin: 34px auto 72px;
+    padding: 56px 64px 96px;
+    background-color: var(--bb-paper);
+    border: 1px solid var(--bb-line);
+    border-radius: var(--bb-radius-lg);
+    box-shadow: var(--bb-shadow-sheet);
+    font-size: 16px;
+    line-height: 1.85;
+    color: var(--bb-ink);
+}
+
+#write > *:first-child {
+    margin-top: 0 !important;
+}
+
+/* =========================================================
+   标题：六个层级各用一种装置、各配一色，不重复
+     H1 居中定标线（三角＋方）· 石墨    H2 通栏色带 · 赤陶
+     H3 三角＋通栏细线 · 赭金          H4 记号笔横条 · 橄榄
+     H5 灰底标签块 · 梅褐              H6 字距微标签 + 引线 · 暖灰
+   装置是层级提示的装饰件（不承载必要信息，按 WCAG 1.4.11
+   装饰件豁免）；颜色是层级索引（见 :root 的标题六色谱）。
+   ========================================================= */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--bb-ink);
+    font-family: var(--bb-font-display);
+    font-weight: 800;
+    line-height: 1.35;
+    letter-spacing: 0.01em;
+}
+
+/* H1 — 居中大标题，下压一条“定标线”：暖砂三角 + 赤陶方形；文字石墨 */
+h1 {
+    font-size: 2.15em;
+    font-weight: 800;
+    text-align: center;
+    color: var(--bb-h1);
+    margin: 1.35em 0 1.25em;
+    padding: 0;
+    line-height: 1.28;
+    letter-spacing: 0.03em;
+}
+
+h1::after {
+    content: "";
+    display: block;
+    height: 26px;
+    margin-top: 26px;
+    background-image:
+        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 26'><polygon points='20,25 48,25 34,4' fill='%23D8A24B'/><rect x='62' y='15' width='11' height='11' fill='%23BF4800'/></svg>"),
+        linear-gradient(var(--bb-line-strong), var(--bb-line-strong));
+    background-repeat: no-repeat, no-repeat;
+    background-position: center bottom, center bottom;
+    background-size: 96px 26px, 100% 1px;
+}
+
+/* H2 — 通栏色带：6px 赤陶竖条 + 赤陶字，向右淡出的雾灰色带
+   全文档唯一带底色的标题级，用来把“大节”从其它层级里一眼分开 */
+h2 {
+    font-size: 1.58em;
+    font-weight: 800;
+    color: var(--bb-h2);
+    margin: 2.05em 0 0.95em;
+    padding: 10px 20px 11px 22px;
+    background-image: linear-gradient(to right,
+        var(--bb-mist) 0%,
+        rgba(245, 245, 247, 0.62) 52%,
+        rgba(245, 245, 247, 0) 100%);
+    border-left: 6px solid var(--bb-h2);
+    border-radius: 0 var(--bb-radius-sm) var(--bb-radius-sm) 0;
+    letter-spacing: 0.015em;
+}
+
+/* H3 — 赭金三角形标记 + 赭金字 + 1px 通栏细线 */
+h3 {
+    font-size: 1.33em;
+    font-weight: 800;
+    color: var(--bb-h3);
+    margin: 1.75em 0 0.7em;
+    padding: 0 0 10px;
+    border-bottom: 1px solid var(--bb-line);
+    line-height: 1.4;
+}
+
+h3::before {
+    content: "";
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    border-bottom: 12px solid var(--bb-h3);
+    margin-right: 11px;
+    vertical-align: 2px;
+}
+
+/* H4 — 橄榄“记号笔”横条：44px 粗下划线（方形语言的横向延伸） */
+h4 {
+    font-size: 1.18em;
+    font-weight: 700;
+    color: var(--bb-h4);
+    margin: 1.5em 0 0.5em;
+    padding-bottom: 8px;
+    background-image: linear-gradient(to right,
+        var(--bb-h4) 0,
+        var(--bb-h4) 44px,
+        transparent 44px);
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    background-size: 100% 3px;
+}
+
+/* H5 — 雾灰标签块：梅褐字 + 梅褐描边，唯一“贴纸”形标题 */
+h5 {
+    display: inline-block;
+    font-size: 0.95em;
+    font-weight: 700;
+    color: var(--bb-h5);
+    margin: 1.15em 0 0.4em;
+    padding: 3px 12px;
+    background: var(--bb-mist);
+    border: 1px solid var(--bb-h5);
+    border-radius: var(--bb-radius-xs);
+    letter-spacing: 0.02em;
+}
+
+/* H6 — 制图式小型大写标签：暖灰字距 + 1px 暖灰引线（最轻的一级） */
+h6 {
+    font-size: 0.8em;
+    font-weight: 700;
+    color: var(--bb-h6);
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    margin: 1.25em 0 0.35em;
+}
+
+h6::before {
+    content: "";
+    display: inline-block;
+    width: 26px;
+    height: 1px;
+    background: var(--bb-h6);
+    margin-right: 10px;
+    vertical-align: 4px;
+}
+
+/* =========================================================
+   正文 / 行内
+   ========================================================= */
+p {
+    margin: 0.75em 0;
+    line-height: 1.85;
+}
+
+strong, b {
+    color: var(--bb-ink);
+    font-weight: 800;
+}
+
+em, i {
+    color: var(--bb-ink);
+}
+
+mark {
+    background: var(--bb-amber);
+    color: var(--bb-ink);
+    padding: 0 4px;
+    border-radius: var(--bb-radius-xs);
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+}
+
+del, s {
+    color: var(--bb-ink-muted);
+    text-decoration-color: var(--bb-clay);
+}
+
+/* =========================================================
+   链接：墨底云白字 = 包豪斯“反白”块
+   ========================================================= */
+a {
+    color: var(--bb-ink);
+    text-decoration: none;
+    border-bottom: 1px solid var(--bb-line-strong);
+    padding: 0 1px;
+    transition: background-color 0.15s ease, color 0.15s ease,
+                border-color 0.15s ease;
+}
+
+a:visited {
+    color: var(--bb-ink);
+}
+
+a:hover,
+a:active {
+    background: var(--bb-ink);
+    color: var(--bb-paper);
+    border-bottom-color: var(--bb-ink);
+    border-radius: var(--bb-radius-xs);
+}
+
+/* =========================================================
+   列表：方形项目符号（包豪斯的“点”是方的）
+   ========================================================= */
+ul {
+    list-style-type: square;
+    padding-left: 1.6em;
+    margin: 0.7em 0;
+}
+
+ol {
+    padding-left: 1.75em;
+    margin: 0.7em 0;
+}
+
+li {
+    margin: 0.28em 0;
+}
+
+li > p {
+    margin: 0.2em 0;
+}
+
+ul > li::marker {
+    color: var(--bb-ink);
+}
+
+ul ul > li::marker {
+    color: var(--bb-clay);
+}
+
+ol > li::marker {
+    color: var(--bb-ink);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+/* 任务列表：方形复选框 */
+.md-task-list-item {
+    list-style: none;
+}
+
+.md-task-list-item > input {
+    -webkit-appearance: none;
+    appearance: none;
+    box-sizing: border-box;
+    width: 17px;
+    height: 17px;
+    margin-right: 9px;
+    vertical-align: -3px;
+    background: var(--bb-paper);
+    border: 1.5px solid var(--bb-line-strong);
+    border-radius: var(--bb-radius-xs);
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+    position: relative;
+}
+
+.md-task-list-item > input:hover {
+    border-color: var(--bb-ink);
+}
+
+.md-task-list-item > input:checked {
+    background: var(--bb-ink);
+    border-color: var(--bb-ink);
+}
+
+.md-task-list-item > input:checked::after {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: 0.5px;
+    width: 5px;
+    height: 9px;
+    border: solid var(--bb-paper);
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.md-task-list-item > input:focus-visible {
+    outline: 2px solid var(--bb-ink);
+    outline-offset: 2px;
+}
+
+/* =========================================================
+   引言块：暖砂实心块 + 墨字
+   ========================================================= */
+blockquote {
+    margin: 1.3em 0;
+    padding: 16px 22px;
+    background: var(--bb-amber);
+    border: 1px solid var(--bb-line-strong);
+    border-radius: var(--bb-radius);
+    color: var(--bb-ink);
+}
+
+blockquote p {
+    margin: 0.35em 0;
+}
+
+blockquote > :first-child {
+    margin-top: 0;
+}
+
+blockquote > :last-child {
+    margin-bottom: 0;
+}
+
+/* 嵌套引言落回雾灰，避免双层暖砂块 */
+blockquote blockquote {
+    background: var(--bb-mist);
+    border-color: var(--bb-line);
+    border-radius: var(--bb-radius-sm);
+}
+
+blockquote mark {
+    background: var(--bb-paper);
+}
+
+/* 暖砂块上的次要信息：70% 墨压在砂底只有 ≈4.0:1，此处加深到 ink-soft（≈5.7:1，AA 通过） */
+blockquote del,
+blockquote s {
+    color: var(--bb-ink-soft);
+    text-decoration-color: var(--bb-ink-soft);
+}
+
+blockquote h6 {
+    color: var(--bb-ink-soft);
+}
+
+/* 暖砂块里标题回到墨色：彩字压彩底会掉对比度（墨字 7.36:1） */
+blockquote h1,
+blockquote h2,
+blockquote h3,
+blockquote h4,
+blockquote h5,
+blockquote h6 {
+    color: var(--bb-ink);
+}
+
+blockquote h5 {
+    border-color: var(--bb-ink-soft);
+}
+
+/* 暖砂块里的选中反白 */
+blockquote ::selection {
+    background: var(--bb-ink);
+    color: var(--bb-paper);
+}
+
+/* =========================================================
+   代码
+   ========================================================= */
+/* 行内代码：薄荷“贴片”，暖纸面上的唯一冷色小件 */
+code, tt {
+    font-family: var(--bb-code-mono);
+    font-size: 0.9em;
+    color: var(--bb-code-mint);
+    background: var(--bb-code-mint-bg);
+    padding: 2px 8px;
+    border: 1.5px solid var(--bb-code-mint-line);
+    border-radius: 6px;
+}
+
+/* 代码块：暖纸底 + 2px 浅砂边 + 3px 立体投影 */
+.md-fences, pre {
+    background: var(--bb-code-bg);
+    border: 2px solid var(--bb-code-border);
+    border-radius: var(--bb-code-radius);
+    padding: 16px 20px;
+    margin: 1em 0;
+    box-shadow: 0 3px 0 0 var(--bb-code-shadow);
+    font-family: var(--bb-code-mono);
+    font-size: 0.92em;
+    line-height: 1.75;   /* 代码行距 1.75，与正文 1.85 区分，便于代码块内阅读 */
+    color: var(--bb-code-text);
+}
+
+/* 分行线（1px）：Typora 里 CodeMirror 的每一行都是独立的 <pre>，而 Typora 的
+   .CodeMirror pre 只重置 border / background / margin / padding，没有重置 box-shadow；
+   于是上面代码块的 3px 卡片投影会漏到每一行，变成行间一条 3px 砂色线。
+   这里按用户要求把它收成 1px，只留一条极轻的行基线；卡片自身的 3px 投影不变。 */
+.md-fences .CodeMirror pre {
+    box-shadow: 0 1px 0 0 var(--bb-code-shadow);
+}
+
+/* 源码模式整页都是 CodeMirror 行，不该出现行间分隔线 */
+#typora-source .CodeMirror pre {
+    box-shadow: none;
+}
+
+.CodeMirror {
+    background: transparent !important;
+    font-family: var(--bb-code-mono) !important;
+}
+
+.CodeMirror-gutters {
+    background: transparent !important;
+    border-right: 1.5px dashed var(--bb-code-border) !important;
+}
+
+.CodeMirror-linenumber {
+    color: var(--bb-code-line-no) !important;
+}
+
+.CodeMirror-cursor {
+    border-left: 2px solid var(--bb-code-mint) !important;
+}
+
+.CodeMirror-selected {
+    background: var(--bb-code-focus) !important;
+}
+
+/* 代码区选中：黄色选中底 + 深棕字（正文选中仍是暖砂） */
+code::selection,
+tt::selection,
+.md-fences ::selection,
+pre ::selection,
+#typora-source ::selection {
+    background: var(--bb-code-focus);
+    color: var(--bb-code-text-main);
+}
+
+/* === 语法高亮（用户指定，区分度优先） === */
+
+/* Markdown 标题/格式符 */
+.CodeMirror .cm-header,
+.CodeMirror .cm-header-1,
+.CodeMirror .cm-header-2,
+.CodeMirror .cm-header-3,
+.CodeMirror .cm-header-4,
+.CodeMirror .cm-header-5,
+.CodeMirror .cm-header-6 {
+    color: var(--bb-code-text-main) !important;
+    font-weight: 800;
+}
+
+.CodeMirror .cm-formatting,
+.CodeMirror .cm-formatting-header,
+.CodeMirror .cm-formatting-list,
+.CodeMirror .cm-formatting-quote,
+.CodeMirror .cm-formatting-code,
+.CodeMirror .cm-formatting-code-block,
+.CodeMirror .cm-formatting-strong,
+.CodeMirror .cm-formatting-em,
+.CodeMirror .cm-formatting-link,
+.CodeMirror .cm-formatting-link-string,
+.CodeMirror .cm-formatting-image {
+    color: var(--bb-code-mint) !important;
+    opacity: 0.9;
+}
+
+.CodeMirror .cm-strong { color: var(--bb-code-text-main) !important; font-weight: 800; }
+.CodeMirror .cm-em     { color: var(--bb-code-em) !important; font-style: italic; }
+.CodeMirror .cm-link   { color: var(--bb-code-mint) !important; }
+.CodeMirror .cm-url    { color: var(--bb-code-text-2) !important; }
+.CodeMirror .cm-quote  { color: var(--bb-code-text-2) !important; font-style: italic; }
+
+/* 语言语法（Python/JS/HTML 等） */
+.CodeMirror .cm-keyword { color: var(--bb-code-keyword) !important; font-weight: 700; }
+.CodeMirror .cm-atom    { color: var(--bb-code-number) !important; }
+.CodeMirror .cm-number  { color: var(--bb-code-number) !important; }
+.CodeMirror .cm-def     { color: var(--bb-code-mint) !important; font-weight: 700; }
+.CodeMirror .cm-variable,
+.CodeMirror .cm-variable-2,
+.CodeMirror .cm-variable-3 { color: var(--bb-code-text-main) !important; }
+.CodeMirror .cm-property { color: var(--bb-code-mint) !important; }
+.CodeMirror .cm-operator { color: var(--bb-code-text-main) !important; }
+.CodeMirror .cm-string   { color: var(--bb-code-string) !important; }
+.CodeMirror .cm-string-2 { color: var(--bb-code-string-2) !important; }
+.CodeMirror .cm-comment  { color: var(--bb-code-line-no) !important; font-style: italic; }
+.CodeMirror .cm-tag      { color: var(--bb-code-keyword) !important; }
+.CodeMirror .cm-attribute{ color: var(--bb-code-number) !important; }
+.CodeMirror .cm-bracket  { color: var(--bb-code-text-2) !important; }
+.CodeMirror .cm-builtin  { color: var(--bb-code-mint) !important; }
+.CodeMirror .cm-meta     { color: var(--bb-code-text-muted) !important; }
+
+/* 数学 */
+.MathJax, mjx-container {
+    color: var(--bb-ink);
+}
+
+/* =========================================================
+   分隔线：短一截的 1px 结构线 + 小号定标（与 H1 的标尺区分）
+   ========================================================= */
+hr {
+    border: 0;
+    height: 14px;
+    width: 100%;
+    margin: 2.8em auto;
+    background-image:
+        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 14'><polygon points='10,13 24,13 17,3' fill='%23D8A24B'/><rect x='30' y='7' width='6' height='6' fill='%23BF4800'/></svg>"),
+        linear-gradient(var(--bb-line), var(--bb-line));
+    background-repeat: no-repeat, no-repeat;
+    background-position: center bottom, center bottom;
+    background-size: 48px 14px, 60% 1px;
+}
+
+/* =========================================================
+   表格：墨底云白字表头 + 雾灰斑马
+   ========================================================= */
+table {
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 1.4em auto;
+    border: 1px solid var(--bb-line-strong);
+    border-radius: var(--bb-radius);
+    overflow: hidden;
+    box-shadow: none;
+}
+
+thead {
+    background: var(--bb-ink);
+}
+
+th {
+    background: var(--bb-ink);
+    color: var(--bb-paper);
+    font-family: var(--bb-font-display);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 9px 14px;
+    text-align: left;
+    border: none;
+}
+
+td {
+    padding: 9px 14px;
+    border-top: 1px solid var(--bb-line-faint);
+    color: var(--bb-ink);
+    background: var(--bb-paper);
+}
+
+tbody tr:nth-child(even) td {
+    background: var(--bb-mist);
+}
+
+tbody tr:hover td {
+    background: var(--bb-amber-tint);
+}
+
+/* 表格里 hover 的选中反白 */
+table ::selection {
+    background: var(--bb-ink);
+    color: var(--bb-paper);
+}
+
+/* =========================================================
+   图片：细墨边框，像贴上的图版
+   ========================================================= */
+img {
+    max-width: 100%;
+    border-radius: var(--bb-radius-sm);
+    border: 1px solid var(--bb-line);
+    box-shadow: none;
+}
+
+p > img:only-child {
+    display: block;
+    margin: 1.4em auto;
+}
+
+/* =========================================================
+   脚注
+   ========================================================= */
+.md-footnote {
+    background: var(--bb-amber-tint);
+    color: var(--bb-ink);
+    border: 1px solid var(--bb-line-strong);
+    border-radius: var(--bb-radius-xs);
+    padding: 0 6px;
+    font-weight: 700;
+}
+
+/* =========================================================
+   选中 / 焦点
+   ========================================================= */
+::selection {
+    background: var(--bb-amber);
+    color: var(--bb-ink);
+}
+
+#write .md-focus-container {
+    outline: none;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+.dropdown-menu > li > a:focus-visible {
+    outline: 2px solid var(--bb-ink);
+    outline-offset: 2px;
+}
+
+/* =========================================================
+   侧栏：绘图台上的文件抽屉
+   ========================================================= */
+.sidebar,
+#typora-sidebar,
+.sidebar-content,
+.sidebar-content-content,
+.sidebar-tabs {
+    background-color: var(--bb-mist) !important;
+    background-image: none !important;
+    color: var(--bb-ink) !important;
+    font-family: var(--bb-font);
+    border-right: 1px solid var(--bb-line);
+}
+
+.sidebar-tabs .sidebar-tab {
+    color: var(--bb-ink-muted);
+}
+
+.sidebar-tabs .sidebar-tab.active {
+    color: var(--bb-ink);
+    border-bottom: 2px solid var(--bb-clay-deep);
+}
+
+.outline-item,
+.file-list-item {
+    border-radius: var(--bb-radius-xs);
+    margin: 2px 6px;
+    padding: 6px 10px;
+    color: var(--bb-ink-soft);
+}
+
+.outline-item:hover,
+.file-list-item:hover {
+    background: var(--bb-paper) !important;
+    color: var(--bb-ink) !important;
+}
+
+.outline-active,
+.outline-item-active,
+.file-list-item-selected {
+    background: var(--bb-ink) !important;
+    color: var(--bb-paper) !important;
+    border-radius: var(--bb-radius-xs);
+    font-weight: 700;
+}
+
+/* 搜索选项按钮 */
+.searchpanel-search-option-btn {
+    background: var(--bb-paper);
+    border: 1px solid var(--bb-line-strong);
+    border-radius: var(--bb-radius-sm);
+}
+
+/* =========================================================
+   快速打开 / 查找输入框
+   ========================================================= */
+#typora-quick-open {
+    background: var(--bb-paper) !important;
+}
+
+#typora-quick-open-input,
+.searchpanel-search-input,
+input[type="text"],
+input[type="search"] {
+    background: var(--bb-paper);
+    border: 1px solid var(--bb-line-strong) !important;
+    border-radius: var(--bb-radius-sm);
+    color: var(--bb-ink);
+    padding: 6px 12px;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+#typora-quick-open-input::placeholder,
+input[type="text"]::placeholder,
+input[type="search"]::placeholder {
+    color: var(--bb-ink-muted);
+}
+
+#typora-quick-open-input:focus,
+.searchpanel-search-input:focus,
+input[type="text"]:focus,
+input[type="search"]:focus {
+    border-color: var(--bb-ink) !important;
+    box-shadow: 0 0 0 3px rgba(29, 29, 31, 0.70);
+    outline: none;
+}
+
+/* =========================================================
+   按钮：方块化 + 反白悬停
+   ========================================================= */
+button,
+.btn,
+.export-item {
+    background: var(--bb-paper);
+    border: 1px solid var(--bb-line-strong);
+    border-radius: var(--bb-radius-sm);
+    box-shadow: none;
+    color: var(--bb-ink);
+    font-family: var(--bb-font);
+    font-weight: 700;
+    padding: 4px 12px;
+    transition: background-color 0.15s ease, border-color 0.15s ease,
+                color 0.15s ease, transform 0.15s ease;
+}
+
+button:hover,
+.btn:hover {
+    background: var(--bb-mist);
+    border-color: var(--bb-ink);
+}
+
+button:active,
+.btn:active {
+    transform: translateY(1px);
+    background: var(--bb-amber-tint);
+}
+
+button.primary,
+.btn-primary {
+    background: var(--bb-ink);
+    color: var(--bb-paper);
+    border-color: var(--bb-ink);
+}
+
+button.primary:hover,
+.btn-primary:hover {
+    background: var(--bb-clay-deep);
+    border-color: var(--bb-clay-deep);
+    color: var(--bb-paper);
+}
+
+/* =========================================================
+   页脚 / 状态栏：整条石墨，云白字
+   ========================================================= */
+footer,
+#footer {
+    background-color: var(--bb-ink) !important;
+    background-image: none !important;
+    color: var(--bb-paper) !important;
+    border-top: 0 !important;
+    font-family: var(--bb-font);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+}
+
+.footer-item,
+.footer-item-info {
+    color: rgba(251, 251, 253, 0.82) !important;
+}
+
+#footer ::selection,
+footer ::selection {
+    background: var(--bb-paper);
+    color: var(--bb-ink);
+}
+
+/* =========================================================
+   源码模式（CodeMirror）：云白纸 + 暖纸行号槽
+   ========================================================= */
+#typora-source {
+    font-family: var(--bb-code-mono) !important;
+    background: var(--bb-code-paper) !important;
+    color: var(--bb-code-text) !important;
+}
+
+#typora-source .CodeMirror {
+    background: var(--bb-code-paper) !important;
+    color: var(--bb-code-text) !important;
+    font-family: var(--bb-code-mono) !important;
+    line-height: 1.7;
+}
+
+#typora-source .CodeMirror-cursor {
+    border-left: 2px solid var(--bb-code-mint) !important;
+}
+
+#typora-source .CodeMirror-gutters {
+    background: var(--bb-code-bg) !important;
+    border-right: 1px solid var(--bb-code-border) !important;
+}
+
+#typora-source .CodeMirror-linenumber {
+    color: var(--bb-code-text-2) !important;
+    font-weight: 600;
+    padding: 0 8px 0 6px;
+}
+
+#typora-source .CodeMirror-selected,
+#typora-source .CodeMirror-line::selection,
+#typora-source .CodeMirror-line ::selection {
+    background: var(--bb-code-focus) !important;
+}
+
+/* === Markdown 源码语法（覆盖 CodeMirror 默认蓝） === */
+#typora-source .cm-header,
+#typora-source .cm-header-1,
+#typora-source .cm-header-2,
+#typora-source .cm-header-3,
+#typora-source .cm-header-4,
+#typora-source .cm-header-5,
+#typora-source .cm-header-6 {
+    color: var(--bb-code-text-main) !important;
+    font-weight: 800;
+}
+
+#typora-source .cm-formatting,
+#typora-source .cm-formatting-header,
+#typora-source .cm-formatting-list,
+#typora-source .cm-formatting-quote,
+#typora-source .cm-formatting-code,
+#typora-source .cm-formatting-code-block {
+    color: var(--bb-code-mint) !important;
+    opacity: 0.9;
+}
+
+#typora-source .cm-formatting-strong,
+#typora-source .cm-strong {
+    color: var(--bb-code-text-main) !important;
+    font-weight: 800;
+}
+
+#typora-source .cm-formatting-em,
+#typora-source .cm-em {
+    color: var(--bb-code-em) !important;
+    font-style: italic;
+}
+
+#typora-source .cm-link,
+#typora-source .cm-formatting-link,
+#typora-source .cm-formatting-link-string {
+    color: var(--bb-code-mint) !important;
+}
+
+#typora-source .cm-url {
+    color: var(--bb-code-text-2) !important;
+}
+
+#typora-source .cm-quote {
+    color: var(--bb-code-text-2) !important;
+    font-style: italic;
+}
+
+#typora-source .cm-comment {
+    color: var(--bb-code-line-no) !important;
+    font-style: italic;
+}
+
+#typora-source .cm-meta    { color: var(--bb-code-text-muted) !important; }
+#typora-source .cm-string  { color: var(--bb-code-string) !important; }
+#typora-source .cm-tag     { color: var(--bb-code-keyword) !important; }
+#typora-source .cm-keyword { color: var(--bb-code-keyword) !important; }
+#typora-source .cm-number  { color: var(--bb-code-number) !important; }
+#typora-source .cm-variable { color: var(--bb-code-text) !important; }
+#typora-source .cm-def     { color: var(--bb-code-mint) !important; }
+
+/* =========================================================
+   杂项 UI
+   ========================================================= */
+.popover-title {
+    background: var(--bb-ink);
+    color: var(--bb-paper);
+    border-radius: var(--bb-radius) var(--bb-radius) 0 0;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+
+.popover {
+    background: var(--bb-paper);
+    border: 1px solid var(--bb-line-strong);
+    border-radius: var(--bb-radius);
+    box-shadow: var(--bb-shadow-float);
+    color: var(--bb-ink);
+}
+
+.popover.bottom > .arrow:after { border-bottom-color: var(--bb-paper); }
+.popover.top    > .arrow:after { border-top-color: var(--bb-paper); }
+.popover.left   > .arrow:after { border-left-color: var(--bb-paper); }
+.popover.right  > .arrow:after { border-right-color: var(--bb-paper); }
+
+.tip,
+.tooltip {
+    background: var(--bb-ink);
+    color: var(--bb-paper);
+    border-radius: var(--bb-radius-sm);
+    box-shadow: var(--bb-shadow-float);
+    font-family: var(--bb-font);
+}
+
+/* 自动补全 / 下拉菜单 */
+.auto-suggest-container,
+.dropdown-menu {
+    background: var(--bb-paper);
+    border: 1px solid var(--bb-line-strong);
+    border-radius: var(--bb-radius);
+    box-shadow: var(--bb-shadow-float);
+}
+
+.dropdown-menu > li > a {
+    color: var(--bb-ink);
+}
+
+.dropdown-menu > li > a:hover {
+    background: var(--bb-amber-tint);
+    color: var(--bb-ink);
+}
+
+/* 弹窗 */
+.modal-content {
+    background: var(--bb-paper);
+    border: 1px solid var(--bb-line-strong);
+    border-radius: var(--bb-radius-lg);
+    box-shadow: var(--bb-shadow-float);
+    color: var(--bb-ink);
+}
+
+/* 滚动条 */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bb-mist);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--bb-line-strong);
+    border-radius: 999px;
+    border: 2px solid var(--bb-mist);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--bb-ink);
+}
+
+/* =========================================================
+   打印：去掉网格与画框，只留墨
+   ========================================================= */
+@media print {
+    html, body {
+        background: var(--bb-paper);
+        background-image: none;
+    }
+
+    #write {
+        background: var(--bb-paper);
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
+        max-width: 100%;
+        padding: 0;
+    }
+
+    .md-fences, pre, blockquote, table {
+        box-shadow: none;
+    }
+}
+
+/* 尊重系统“减少动态效果”设置 */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* End of graphite-island-spectrum.css */
